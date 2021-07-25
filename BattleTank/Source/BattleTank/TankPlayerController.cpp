@@ -47,7 +47,7 @@ void ATankPlayerController::AimTowardsCrosshair()
 	if (GetSightRayHitLocation(OutHitLocation))
 	{
 
-		UE_LOG(LogTemp, Warning, TEXT("HitLocation: %s"), *OutHitLocation.ToString());
+		//UE_LOG(LogTemp, Warning, TEXT("Look direction: %s"), *OutHitLocation.ToString());
 		
 			// TODO tell controlled tank to aim at this point
 	}
@@ -55,49 +55,25 @@ void ATankPlayerController::AimTowardsCrosshair()
 // Get world location if linetrace through crosshair, true if hits landscape
 bool ATankPlayerController::GetSightRayHitLocation(FVector& OutHitLocation) const
 {
-	OutHitLocation = FVector(1.0);
+	// Find the crosshair position in pixel coordinates
+	int32 ViewportSizeX, ViewportSizeY;
+	GetViewportSize(ViewportSizeX, ViewportSizeY);
+	auto ScreenLocation = FVector2D(ViewportSizeX * CrossHairXLocation, ViewportSizeY * CrossHairYLocation);
+
+	// "De-project" the screen position of the crosshair to a world direction
+	FVector LookDirection;
+	if (GetLookDirection(ScreenLocation, LookDirection))
+	{
+		UE_LOG(LogTemp, Warning, TEXT("Look direction: %s"), *LookDirection.ToString());
+	}
+	// Line-trace along that look direction, and see what we hit (up to maximum range)
+
 	return true;
 }
 
-/*
 
-
-FVector UGrabber::GetReachLineStart()
+bool ATankPlayerController::GetLookDirection(FVector2D ScreenLocation, FVector& LookDirection) const
 {
-	FRotator PlayerViewPointRotation;
-	FVector PlayerViewPointLocation;
-
-	GetWorld()->GetFirstPlayerController()->GetPlayerViewPoint(OUT PlayerViewPointLocation, OUT PlayerViewPointRotation);
-
-	return PlayerViewPointLocation;
+	FVector CameraWorldLocation; // To be discarded
+	return DeprojectScreenPositionToWorld(ScreenLocation.X, ScreenLocation.Y, CameraWorldLocation, LookDirection);
 }
-
-FVector UGrabber::GetReachLineEnd()
-{
-	FRotator PlayerViewPointRotation;
-	FVector PlayerViewPointLocation;
-
-	GetWorld()->GetFirstPlayerController()->GetPlayerViewPoint(OUT PlayerViewPointLocation, OUT PlayerViewPointRotation);
-
-	return PlayerViewPointLocation + (PlayerViewPointRotation.Vector() * Reach);
-}
-
-const FHitResult UGrabber::GetFirstPhysicsBodyInReach()
-{
-	/// Setup query parameters
-
-
-	/// Line-trace (AKA Ray-cast) out to reach distance
-	FHitResult HitResult;
-	FCollisionQueryParams TraceParameters(FName(TEXT("")), false, GetOwner());
-	GetWorld()->LineTraceSingleByObjectType(
-		OUT HitResult,
-		GetReachLineStart(),
-		GetReachLineEnd(),
-		FCollisionObjectQueryParams(ECollisionChannel::ECC_PhysicsBody),
-		TraceParameters
-	);
-
-	return HitResult;
-}
-*/
