@@ -18,6 +18,9 @@ public:
 	virtual void BeginPlay() override;
 	void AimAt(FVector OutHitLocation);
 
+	UFUNCTION(BluePrintCallable, Category = Setup)
+	void SetBarrelReference(UStaticMeshComponent* BarrelToSet);
+
 protected:
 
 	UTankAimingComponent* TankAimingComponent = nullptr;
