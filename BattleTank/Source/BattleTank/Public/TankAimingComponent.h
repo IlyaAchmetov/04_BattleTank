@@ -23,7 +23,7 @@ public:
 	void SetBarrelReference(UTankBarrel* BarrelToSet);
 	void SetTurretReference(UTankTurret* TurretToSet);
 	void AimAt(FVector OutHitLocation, float LaunchSpeed);
-	// TODO add SetTurretReference
+
 protected:
 	// Called when the game starts
 

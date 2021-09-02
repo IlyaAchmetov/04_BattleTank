@@ -21,13 +21,17 @@ public:
 
 	// Called when the game starts or when spawned
 	virtual void BeginPlay() override;
-	void AimAt(FVector OutHitLocation);
-
+	
 	UFUNCTION(BluePrintCallable, Category = Setup)
 	void SetBarrelReference(UTankBarrel* BarrelToSet);
 
 	UFUNCTION(BluePrintCallable, Category = Setup)
 	void SetTurretReference(UTankTurret* TurretToSet);
+
+	void AimAt(FVector OutHitLocation);
+
+	UFUNCTION(BluePrintCallable, Category = Firing)
+	void Fire();
 
 protected:
 
@@ -43,5 +47,5 @@ private:
 	virtual void SetupPlayerInputComponent(class UInputComponent* PlayerInputComponent) override;
 
 	UPROPERTY(EditAnywhere, Category = Firing)
-	float LaunchSpeed = 100000; // TO DO Find sensible default values
+	float LaunchSpeed = 4000;
 };
