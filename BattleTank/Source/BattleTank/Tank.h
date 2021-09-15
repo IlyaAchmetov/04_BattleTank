@@ -25,10 +25,7 @@ public:
 	virtual void BeginPlay() override;
 	
 	UFUNCTION(BluePrintCallable, Category = Setup)
-	void SetBarrelReference(UTankBarrel* BarrelToSet);
-
-	UFUNCTION(BluePrintCallable, Category = Setup)
-	void SetTurretReference(UTankTurret* TurretToSet);
+	void SetReference(UTankBarrel* BarrelToSet, UTankTurret* TurretToSet);
 
 	void AimAt(FVector OutHitLocation);
 
@@ -59,7 +56,7 @@ private:
 
 	// Local barrel reference for spawning a projectile
 	UTankBarrel* Barrel = nullptr;
-
+	UTankTurret* Turret = nullptr;
 	
 
 	double LastFireTime = 0;
