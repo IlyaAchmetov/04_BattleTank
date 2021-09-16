@@ -14,13 +14,6 @@ ATank::ATank()
 	// No need to protect points as added at construction
 }
 
-void ATank::SetReference(UTankBarrel* BarrelToSet, UTankTurret* TurretToSet)
-{
-	TankAimingComponent->Initialise(BarrelToSet, TurretToSet);
-	Barrel = BarrelToSet;
-	Turret = TurretToSet;
-}
-
 
 void ATank::Fire()
 {
@@ -41,21 +34,12 @@ void ATank::Fire()
 	
 }
 
-// Called when the game starts or when spawned
-void ATank::BeginPlay()
-{
-	Super::BeginPlay();
-	
-}
-
-// Called to bind functionality to input
-void ATank::SetupPlayerInputComponent(UInputComponent* PlayerInputComponent)
-{
-	Super::SetupPlayerInputComponent(PlayerInputComponent);
-
-}
 
 void ATank::AimAt(FVector OutHitLocation)
 {
+	if (!TankAimingComponent)
+	{
+		return;
+	}
 	TankAimingComponent->AimAt(OutHitLocation, LaunchSpeed);
 }
