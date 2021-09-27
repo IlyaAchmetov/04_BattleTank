@@ -1,4 +1,4 @@
-// Fill out your copyright notice in the Description page of Project Settings.
+// Copyright ILS Technologies Ltd
 
 #pragma once
 
@@ -9,7 +9,10 @@
 
 // Forward declaration
 class ATank;
-
+class UTankAimingComponent;
+/*
+* Responsible for helping player aim.
+*/
 UCLASS()
 class BATTLETANK_API ATankPlayerController : public APlayerController
 {
@@ -25,6 +28,8 @@ protected:
 	UFUNCTION(BlueprintCallable, Category = "Setup")
 	ATank* GetControlledTank() const;
 
+	UFUNCTION(BlueprintImplementableEvent, Category = "Setup")
+	void FoundAimingComponent(UTankAimingComponent* AimCompRef);
 private:
 
 	//start the tank moving the barrel towards so that a shot would hit where crosshair intersects the world

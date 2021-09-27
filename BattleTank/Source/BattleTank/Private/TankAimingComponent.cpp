@@ -1,4 +1,4 @@
-// Fill out your copyright notice in the Description page of Project Settings.
+// Copyright ILS Technologies Ltd
 
 #include "TankAimingComponent.h"
 #include "TankBarrel.h"
