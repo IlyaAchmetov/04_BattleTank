@@ -12,14 +12,19 @@ ATank::ATank()
 	PrimaryActorTick.bCanEverTick = false;
 	// No need to protect points as added at construction
 	auto TankName = GetName();
-	UE_LOG(LogTemp, Warning, TEXT("abc: %s Tank C++ construct"), *TankName)
 }
 
 void ATank::BeginPlay() 
 {
 	Super::BeginPlay(); // Needed to run BP BeginPlay();
 	auto TankName = GetName();
-	UE_LOG(LogTemp, Warning, TEXT("abc: %s C++ Begin Play"), *TankName)
+	TankAimingComponent = FindComponentByClass<UTankAimingComponent>();
+}
+
+void ATank::AimAt(FVector OutHitLocation)
+{
+	if (!ensure(TankAimingComponent)) { return; }
+	TankAimingComponent->AimAt(OutHitLocation, LaunchSpeed);
 }
 
 void ATank::Fire()
@@ -41,11 +46,4 @@ void ATank::Fire()
 
 	// Spawn a projectile at socket location on the barrel
 	
-}
-
-
-void ATank::AimAt(FVector OutHitLocation)
-{
-	if (!ensure(TankAimingComponent)) { return; }
-	TankAimingComponent->AimAt(OutHitLocation, LaunchSpeed);
 }
