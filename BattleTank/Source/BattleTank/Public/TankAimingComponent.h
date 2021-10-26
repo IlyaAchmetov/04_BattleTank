@@ -30,7 +30,7 @@ public:
 
 	UFUNCTION(BlueprintCallable, Category = "Setup")
 	void Initialise(UTankBarrel* BarrelToSet, UTankTurret* TurretToSet);
-	void AimAt(FVector OutHitLocation, float LaunchSpeed);
+	void AimAt(FVector OutHitLocation);
 
 protected:
 	// Called when the game starts
@@ -38,6 +38,9 @@ protected:
 	EFiringState FiringState = EFiringState::Locked;
 
 private:
+
+	UPROPERTY(EditDefaultsOnly, Category = "Firing")
+	float LaunchSpeed = 4000;
 
 	// Sets default values for this component's properties
 	UTankAimingComponent();
