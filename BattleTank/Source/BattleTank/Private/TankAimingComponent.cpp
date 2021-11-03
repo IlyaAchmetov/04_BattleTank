@@ -18,20 +18,9 @@ UTankAimingComponent::UTankAimingComponent()
 
 void UTankAimingComponent::BeginPlay()
 {
+	Super::BeginPlay();
 	// So that initial fire is after delay
 	LastFireTime = FPlatformTime::Seconds();
-}
-
-void UTankAimingComponent::TickComponent(float DeltaTime, enum ELevelTick TickType, FActorComponentTickFunction* ThisTickFunction)
-
-{
-	if ((FPlatformTime::Seconds() - LastFireTime) > ReloadTimeInSeconds)
-	{
-
-		FiringState = EFiringState::Reloading;
-	}
-
-	// TODO Handle aiming and locked states
 }
 
 void UTankAimingComponent::Initialise(UTankBarrel* BarrelToSet, UTankTurret* TurretToSet)
@@ -41,11 +30,35 @@ void UTankAimingComponent::Initialise(UTankBarrel* BarrelToSet, UTankTurret* Tur
 	Turret = TurretToSet;
 }
 
+void UTankAimingComponent::TickComponent(float DeltaTime, enum ELevelTick TickType, FActorComponentTickFunction* ThisTickFunction)
 
+{
+	if ((FPlatformTime::Seconds() - LastFireTime) < ReloadTimeInSeconds)
+	{
+		FiringState = EFiringState::Reloading;
+	}
+	else if (IsBarrelMoving())
+	{
+		FiringState = EFiringState::Aiming;
+	}
+	else
+	{ 
+		FiringState = EFiringState::Locked;
+	}
+}
+
+
+bool UTankAimingComponent::IsBarrelMoving()
+
+{
+	if (!ensure(Barrel)){ return false; }
+	auto BarrelForward = Barrel->GetForwardVector();
+	return !BarrelForward.Equals(AimDirection, 0.01); //vectors are equal
+}
 
 void UTankAimingComponent::AimAt(FVector OutHitLocation)
 {
-	if (!ensure (Barrel)) { return; }
+	if (!ensure(Barrel)) { return;}
 	// this
 
 	FVector OutLaunchVelocity;
@@ -71,19 +84,19 @@ void UTankAimingComponent::AimAt(FVector OutHitLocation)
 	);
 	if (bHaveAimSolution)
 	{
-		auto AimDirection = OutLaunchVelocity.GetSafeNormal();
+		AimDirection = OutLaunchVelocity.GetSafeNormal();
 		auto TankName = GetOwner()->GetName();
 		MoveBarrelTowards(AimDirection);
 	}
 }
 
 
-void UTankAimingComponent::MoveBarrelTowards(FVector AimDirection) 
+void UTankAimingComponent::MoveBarrelTowards(FVector AimingDirection) 
 {
 	if (!ensure(Barrel) || !ensure(Turret)) { return; }
 	// workout difference between current barrel rotation and aimdirection
 	auto BarrelRotator = Barrel->GetForwardVector().Rotation();
-	auto AimAsRotator = AimDirection.Rotation();
+	auto AimAsRotator = AimingDirection.Rotation();
 	auto DeltaRotator = AimAsRotator - BarrelRotator;
 	
 
