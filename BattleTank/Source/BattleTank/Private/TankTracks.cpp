@@ -6,7 +6,7 @@
 UTankTracks::UTankTracks()
 
 {
-	PrimaryComponentTick.bCanEverTick = true;
+	PrimaryComponentTick.bCanEverTick = false;
 }
 
 void UTankTracks::BeginPlay()
@@ -15,33 +15,43 @@ void UTankTracks::BeginPlay()
 	OnComponentHit.AddDynamic(this, &UTankTracks::OnHit);
 }
 
-void UTankTracks::TickComponent(float DeltaTime, enum ELevelTick TickType, FActorComponentTickFunction* ThisTickFunction)
 
+void UTankTracks::OnHit(UPrimitiveComponent* HitComponent, AActor* OtherActor, UPrimitiveComponent* OtherComponent, FVector NormalImpulse, const FHitResult& Hit)
 {
-	// calculate the slippage speed
+	DriveTrack();
+	ApplySidewaysForce();
+	CurrentThrottle = 0;
+}
+
+void UTankTracks::ApplySidewaysForce()
+
+{	// work-out the required acceleration this frame to correct
 	auto SlippageSpeed = FVector::DotProduct(GetRightVector(), GetComponentVelocity());
-	// work-out the required acceleration this frame to correct
+	auto DeltaTime = GetWorld()->GetDeltaSeconds();
 	auto CorrectionAcceleration = -SlippageSpeed / DeltaTime * GetRightVector();
 	// calculate and apply sideways force (F = m a)
 	auto TankRoot = Cast<UStaticMeshComponent>(GetOwner()->GetRootComponent());
 
 	auto CorrectionForce = TankRoot->GetMass() * CorrectionAcceleration / 2;
 	TankRoot->AddForce(CorrectionForce);
+
 }
 
-void UTankTracks::SetThrottle(float Throttle)
+void UTankTracks::DriveTrack()
 
 {
 	//auto Time = GetWorld()->GetTimeSeconds();
 	auto Name = GetName();
 
-	auto ForceApplied = GetForwardVector() * Throttle * TrackMaxDrivingForce;
+	auto ForceApplied = GetForwardVector() * CurrentThrottle * TrackMaxDrivingForce;
 	auto ForceLocation = GetComponentLocation();
 	auto TankRoot = Cast<UPrimitiveComponent>(GetOwner()->GetRootComponent());
 	TankRoot->AddForceAtLocation(ForceApplied, ForceLocation);
 }
 
-void UTankTracks::OnHit(UPrimitiveComponent* HitComponent, AActor* OtherActor, UPrimitiveComponent* OtherComponent, FVector NormalImpulse, const FHitResult& Hit)
+void UTankTracks::SetThrottle(float Throttle)
+
 {
-	UE_LOG(LogTemp, Warning, TEXT("I'm hit, i'm hit!"))
+	CurrentThrottle = FMath::Clamp<float>(CurrentThrottle + Throttle, -1, 1);
 }
+
