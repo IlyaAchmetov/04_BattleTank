@@ -22,6 +22,12 @@ public:
 	float TrackMaxDrivingForce = 4000000; // 40 tonne tak, and 1g acceleration
 
 private:
+	virtual void BeginPlay() override;
+
 	UTankTracks();
 	virtual void TickComponent(float DeltaTime, enum ELevelTick TickType, FActorComponentTickFunction* ThisTickFunction) override;
+
+	UFUNCTION(BlueprintCallable, Category = "Events")
+	void OnHit(UPrimitiveComponent* HitComponent, AActor* OtherActor, UPrimitiveComponent* OtherComponent, FVector NormalImpulse, const FHitResult& Hit);
+
 };
