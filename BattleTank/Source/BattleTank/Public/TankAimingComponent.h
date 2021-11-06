@@ -36,6 +36,7 @@ public:
 	UFUNCTION(BluePrintCallable, Category = "Firing")
 	void Fire();
 	
+	EFiringState GetFiringState() const;
 
 protected:
 	// Called when the game starts
