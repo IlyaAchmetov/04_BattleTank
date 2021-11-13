@@ -18,7 +18,8 @@ enum class EFiringState : uint8
 {
 	Reloading,
 	Aiming,
-	Locked
+	Locked,
+	OutOfAmmo,
 };
 
 // Holds Barrel's properties and Elevate method
@@ -37,6 +38,9 @@ public:
 	void Fire();
 	
 	EFiringState GetFiringState() const;
+
+	UFUNCTION(BluePrintCallable, Category = "Firing")
+	int GetRoundsLeft() const;
 
 protected:
 	// Called when the game starts
@@ -60,6 +64,9 @@ private:
 	float ReloadTimeInSeconds = 3.0f;
 
 	double LastFireTime = 0;
+
+	int RoundsLeft = 3;
+	
 	FVector AimDirection;
 
 	//FVector AimDirection;
