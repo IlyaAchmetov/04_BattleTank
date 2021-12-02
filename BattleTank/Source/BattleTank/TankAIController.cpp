@@ -2,6 +2,7 @@
 #include "TankAIController.h"
 #include "TankAimingComponent.h"
 #include "Tank.h" // So we can implement OnDeath
+#include "GameFramework/Pawn.h"
 
 void ATankAIController::BeginPlay()
 {
@@ -23,7 +24,8 @@ void ATankAIController::SetPawn(APawn* InPawn)
 
 void ATankAIController::OnPossesedTankDeath()
 {
-	UE_LOG(LogTemp, Warning, TEXT("Tank caput"))
+	if (!ensure(GetPawn())) { return; } // TODO remove if ok
+	GetPawn()->DetachFromControllerPendingDestroy();
 }
 
 

@@ -9,6 +9,7 @@
 
 // Forward declarations
 class UTankAimingComponent;
+class APawn;
 
 UCLASS()
 class BATTLETANK_API ATankAIController : public AAIController
